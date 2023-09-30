@@ -11,11 +11,10 @@
   "dependencies": {
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
+    "googleapis": "^126.0.1",
+    "moment-timezone": "^0.5.43",
     "node-schedule": "^2.1.1",
     "nodemon": "^3.0.1",
     "timezone": "^1.0.23"
-  },
-  "devDependencies": {
-    "eslint": "^8.50.0"
   }
 }
