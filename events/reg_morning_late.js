@@ -3,8 +3,7 @@ module.exports = async (message, channel) => {
 
   await message.react(emojiMorning);
   const collector = message.createReactionCollector({
-    // time: 7 * 60 * 60 * 1000 + 15 * 60 * 1000, // Từ 4h sáng đến 11h15 => 7h15
-    time: 5000,
+    time: 7 * 60 * 60 * 1000 + 15 * 60 * 1000, // Từ 4h sáng đến 11h15 => 7h15
     dispose: true, // Bao gồm cả khi người dùng bỏ react
   });
   // Tạo một mảng để lưu ID của người dùng đã thả react
@@ -31,7 +30,7 @@ module.exports = async (message, channel) => {
     let morningArray = Array.from(morningSet);
 
     await channel.send(
-      `**Danh sách người đăng kí trễ sáng:**\n
+      `**Danh sách người đăng kí trễ sáng:**
       *Số lượng: ${morningCount}*\n➖➖➖➖➖\n🆗\t${morningArray.join("\n🆗\t")}`
     );
   });

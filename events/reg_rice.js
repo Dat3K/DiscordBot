@@ -5,6 +5,7 @@ module.exports = async (message, channel) => {
   await message.react("🌃");
   const collector = message.createReactionCollector({
     time: 8 * 60 * 60 * 1000, // Thời gian đếm, ở đây là 8h <=> 3h sang
+    // time: 5000, // Thời gian đếm, ở đây là 8h <=> 3h sang
     dispose: true, // Bao gồm cả khi người dùng bỏ react
   });
 

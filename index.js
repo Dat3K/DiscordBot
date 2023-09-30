@@ -17,6 +17,8 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildEmojisAndStickers,
     GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageTyping,
+    GatewayIntentBits.DirectMessageReactions,
   ],
 });
 let listChannel;
@@ -28,36 +30,48 @@ client.once(readyEvent.name, () => {
     riceReg: client.channels.cache.get("1152273873086185504"),
     log: client.channels.cache.get("1156176917876183083"),
   };
-  listChannel.test.send("Online!!!")
+  listChannel.test.send("Online!!!");
 });
 
 client.on("messageCreate", async (message) => {
   if (message.embeds.length > 0) {
+    const channel = listChannel.riceReg;
+    if (
+      message.channel.id != channel ||
+      message.author.id != "678344927997853742"
+    )
+      return;
     const type = message.embeds[0].data.footer.text;
-
+    console.log(type);
     if (type == "TreSang") {
-      reg_morning_late(message, listChannel.test);
+      reg_morning_late(message, channel);
     }
-    
+
     if (type == "TreToi") {
-      reg_night_late(message, listChannel.test);
+      reg_night_late(message, channel);
     }
 
     if (type == "DangKiCom") {
       console.log("okeee");
-      reg_rice(message, listChannel.riceReg);
+      reg_rice(message, channel);
     }
   }
 });
 
 client.on("messageReactionAdd", async (reaction, user) => {
-  log("messageReactionAdd", listChannel.test, listChannel.log, reaction, user);
+  log(
+    "messageReactionAdd",
+    listChannel.riceReg,
+    listChannel.log,
+    reaction,
+    user
+  );
 });
 
 client.on("messageReactionRemove", async (reaction, user) => {
   log(
     "messageReactionRemove",
-    listChannel.test,
+    listChannel.riceReg,
     listChannel.log,
     reaction,
     user
@@ -65,4 +79,3 @@ client.on("messageReactionRemove", async (reaction, user) => {
 });
 // Log in to Discord with your client's token
 client.login(process.env.BOT_TOKEN);
-module.exports = client;
