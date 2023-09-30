@@ -42,14 +42,12 @@ module.exports = async (message, channel) => {
     const afternoonCount = afternoonSet.size;
     let morningArray = Array.from(morningSet);
     let afternoonArray = Array.from(afternoonSet);
-    const vietnamTime = moment()
-      .tz("Asia/Ho_Chi_Minh")
-      .format("HH:mm:ss  DD/MM/YYYY");
+    const vietnamTime = moment().tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
 
     await channel.send(
       `**Sáng:** ${morningCount} người ăn\n**Chiều:** ${afternoonCount} người ăn`
     );
-    await channel.send(`➖\n*Danh sách người đăng kí cơm*\n➖`);
+    await channel.send(`➖\n*Danh sách người đăng kí cơm ngày ${vietnamTime}*\n➖`);
 
     await channel.send(
       `**Sáng:**\n🆗\t${morningArray.join(

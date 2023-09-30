@@ -1,3 +1,6 @@
+const moment = require("moment-timezone");
+const vietnamTime = moment().tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+
 module.exports = async (message, channel) => {
   const emojiAfternoon = "<:night_rice:1157531072763015248>";
 
@@ -30,7 +33,7 @@ module.exports = async (message, channel) => {
     let afternoonArray = Array.from(afternoonSet);
 
     await channel.send(
-      `**Danh sách người đăng kí trễ tối:**
+      `**Danh sách người đăng kí trễ tối ngày ${vietnamTime}:**
       *Số lượng: ${afternoonCount}*\n➖➖➖➖➖\n🆗\t${afternoonArray.join(
         "\n🆗\t"
       )}`
