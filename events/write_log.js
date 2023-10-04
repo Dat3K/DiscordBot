@@ -15,14 +15,14 @@ module.exports = async (event, readChannel, writeChannel, reaction, user) => {
       await writeChannel.send(
         `${member.nickname || `<@${user.id}>`} đã thêm react <:${
           reaction.emoji.name
-        }:${reaction.emoji.id || ""}> lúc ${vietnamTime}`
+        }:${reaction.emoji.id || ""}> lúc ${vietnamTime} (${reaction.message.id})`
       );
     }
     if (event == "messageReactionRemove") {
       await writeChannel.send(
         `${member.nickname || `<@${user.id}>`} đã bỏ react <:${
           reaction.emoji.name
-        }:${reaction.emoji.id || ""}> lúc ${vietnamTime}`
+        }:${reaction.emoji.id || ""}> lúc ${vietnamTime} (${reaction.message.id})`
       );
     }
   } catch (error) {

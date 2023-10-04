@@ -1,8 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 require('dotenv').config();
-const axios = require('axios');
-const url = 'https://api.openai.com/v1/completions';
-
+const { OpenAI } = require('openai');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('chatgpt')
@@ -18,43 +16,25 @@ module.exports = {
   execute: async (interaction) => {
     try {
       const { options } = interaction;
-      const response = await axios.post(
-        url,
-        {
-          prompt: options.getString('question'),
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.CHATGPT_API}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        // API trả về thành công
-        await interaction.reply({
-          content: response.data.choices[0].text,
-          ephemeral: false,
-        });
-      } else if (response.status === 429) {
-        // Bị giới hạn rate
-        await interaction.reply({
-          content: '*Server bị giới hạn, hãy thử lại sau!*',
-          ephemeral: true,
-        });
-      } else if (response.status >= 500) {
-        // Lỗi server
-        await interaction.reply({
-          content: '*Server bị lỗi, hãy thử lại!*',
-          ephemeral: true,
-        });
-      } else {
-        // Các lỗi 400 khác
-        await interaction.reply({
-          content: `Mã lỗi: ${response.status}`,
-          ephemeral: true,
-        });
-      }
+
+      const openai = new OpenAI({
+        apiKey: process.env.CHATGPT_API,
+      });
+      await interaction.reply({
+        content: '*Đang nghĩ vui lòng đợi...(khoảng 5 đến 10s)*',
+        ephemeral: true,
+      });
+      const response = await openai.chat.completions.create({
+        messages: [{ role: 'user', content: options.getString('question') }],
+        model: 'gpt-3.5-turbo-16k',
+        max_tokens: 1500,
+        temperature: 1,
+      });
+
+      await interaction.followUp({
+        content: `*Phản hồi từ ChatGPT:* ${response.choices[0].message.content}`,
+        ephemeral: true,
+      });
     } catch (error) {
       console.error(error);
     }

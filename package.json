@@ -16,6 +16,7 @@
     "moment-timezone": "^0.5.43",
     "node-schedule": "^2.1.1",
     "nodemon": "^3.0.1",
+    "openai": "^4.11.0",
     "timezone": "^1.0.23",
     "uuid": "^9.0.1"
   }
