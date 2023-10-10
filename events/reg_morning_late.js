@@ -14,6 +14,7 @@ module.exports = async (message, channel) => {
     });
 
     collector.on('collect', async (reaction, user) => {
+      if (user.bot) return;
       const member = await message.guild.members.cache.get(user.id);
 
       if (reaction.emoji.name === 'sang') {
@@ -22,6 +23,7 @@ module.exports = async (message, channel) => {
     });
 
     collector.on('remove', async (reaction, user) => {
+      if (user.bot) return;
       const member = await message.guild.members.cache.get(user.id);
 
       if (reaction.emoji.name === 'sang') {

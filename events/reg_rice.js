@@ -18,6 +18,7 @@ module.exports = async (message, channel) => {
     });
 
     collector.on('collect', async (reaction, user) => {
+      if (user.bot) return;
       const member = await message.guild.members.cache.get(user.id);
 
       if (reaction.emoji.name === '⛅') {
@@ -30,6 +31,7 @@ module.exports = async (message, channel) => {
     });
 
     collector.on('remove', async (reaction, user) => {
+      if (user.bot) return;
       const member = await message.guild.members.cache.get(user.id);
 
       if (reaction.emoji.name === '⛅') {
@@ -56,15 +58,15 @@ module.exports = async (message, channel) => {
           iconURL:
             'https://i.pinimg.com/564x/3e/2d/de/3e2dde0a4fe1987cf954df0760479579.jpg',
         })
-        .setColor(0x099fff)
+        .setColor(0xfe0000)
         .setTitle(`Chốt đăng kí cơm ${vietnamTime}`.toUpperCase())
         .setThumbnail(
           'https://media.giphy.com/media/OZyUhzVIMeBLpjbRGn/giphy.gif'
         )
         .addFields(
           {
-            name: 'Tổng',
-            value: `🆗\t${morningCount + afternoonCount} người`,
+            name: 'Tổng:',
+            value: `Sáng: ${morningCount} \nChiều: ${afternoonCount}`,
           },
           {
             name: 'Sáng',
@@ -75,7 +77,7 @@ module.exports = async (message, channel) => {
             name: 'Chiều',
             value: `🆗\t${afternoonArray.join('\n🆗\t')}`,
             inline: true,
-          },
+          }
         )
         .setTimestamp()
         .setFooter({

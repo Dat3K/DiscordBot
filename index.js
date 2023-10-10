@@ -78,9 +78,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 client.on('messageReactionRemove', async (reaction, user) => {
   if (reaction.message.channel.id == listChannel.riceReg)
-    log('messageReactionAdd', listChannel.logRiceReg, reaction, user);
+    log('messageReactionRemove', listChannel.logRiceReg, reaction, user);
   if (reaction.message.channel.id == listChannel.late)
-    log('messageReactionAdd', listChannel.logRiceLate, reaction, user);
+    log('messageReactionRemove', listChannel.logRiceLate, reaction, user);
 });
 
 client.on('interactionCreate', async (interaction) => {
