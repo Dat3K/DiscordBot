@@ -1,5 +1,7 @@
 const sheet_reader = require('./sheet_reader');
 const moment = require('moment-timezone');
+moment.locale('vi');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = async (message, channel) => {
   // Tạo một mảng để lưu ID của người dùng đã thả react
@@ -44,23 +46,50 @@ module.exports = async (message, channel) => {
       const afternoonCount = afternoonSet.size;
       let morningArray = Array.from(morningSet);
       let afternoonArray = Array.from(afternoonSet);
-      const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
+      const vietnamTime = moment()
+        .tz('Asia/Ho_Chi_Minh')
+        .format('dddd, DD/MM/YYYY');
 
-      await channel.send(
-        `**Sáng:** ${morningCount} người ăn\n**Chiều:** ${afternoonCount} người ăn`
-      );
-      await channel.send(
-        `➖\n*Danh sách người đăng kí cơm ngày ${vietnamTime}*\n➖`
-      );
+      const setMessage = new EmbedBuilder()
+        .setAuthor({
+          name: 'Maid Lưu Xá 5',
+          iconURL:
+            'https://i.pinimg.com/564x/3e/2d/de/3e2dde0a4fe1987cf954df0760479579.jpg',
+        })
+        .setColor(0x099fff)
+        .setTitle(`Chốt đăng kí cơm ${vietnamTime}`.toUpperCase())
+        .setThumbnail(
+          'https://media.giphy.com/media/OZyUhzVIMeBLpjbRGn/giphy.gif'
+        )
+        .addFields(
+          {
+            name: 'Tổng',
+            value: `🆗\t${morningCount + afternoonCount} người`,
+          },
+          {
+            name: 'Sáng',
+            value: `🆗\t${morningArray.join('\n🆗\t')}`,
+            inline: true,
+          },
+          {
+            name: 'Chiều',
+            value: `🆗\t${afternoonArray.join('\n🆗\t')}`,
+            inline: true,
+          },
+        )
+        .setTimestamp()
+        .setFooter({
+          text: 'ChotCom',
+          iconURL:
+            'https://i.pinimg.com/564x/3e/2d/de/3e2dde0a4fe1987cf954df0760479579.jpg',
+        });
 
-      await channel.send(
-        `**Sáng:**\n🆗\t${morningArray.join(
-          '\n🆗\t'
-        )}\n➖➖➖\n**Chiều:**\n🆗\t${afternoonArray.join('\n🆗\t')}`
-      );
-
+      await channel.send({
+        content: `➖\n*Danh sách người đăng kí cơm ngày ${vietnamTime}*\n➖`,
+        embeds: [setMessage],
+      });
       await sheet_reader.appendDataSheet(
-        'DangKiCom',
+        'DangKiCom!A:A',
         morningArray.map((user) => [user, 'Sáng', vietnamTime])
       );
       await sheet_reader.appendDataSheet(

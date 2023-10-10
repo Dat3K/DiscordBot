@@ -16,16 +16,17 @@ module.exports = {
   execute: async (interaction) => {
     try {
       const { options } = interaction;
-
+      const question = options.getString('question');
       const openai = new OpenAI({
         apiKey: process.env.CHATGPT_API,
       });
+
       await interaction.reply({
-        content: '*Đang nghĩ vui lòng đợi...(khoảng 5 đến 10s)*',
+        content: `Câu hỏi của bạn là:${question} *Đang nghĩ vui lòng đợi...(khoảng 5 đến 10s)*`,
         ephemeral: true,
       });
       const response = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: options.getString('question') }],
+        messages: [{ role: 'user', content: question }],
         model: 'gpt-3.5-turbo-16k',
         max_tokens: 1500,
         temperature: 1,

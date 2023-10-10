@@ -37,6 +37,8 @@ client.once(readyEvent.name, () => {
     riceReg: client.channels.cache.get('1152273873086185504'),
     log: client.channels.cache.get('1156176917876183083'),
     late: client.channels.cache.get('1158435828117286962'),
+    logRiceLate: client.channels.cache.get('1160646902291902645'),
+    logRiceReg: client.channels.cache.get('1160646807550972065'),
   };
   listChannel.test.send('Online!!!');
   schedule_reg_rice(listChannel.riceReg);
@@ -68,23 +70,17 @@ client.on('messageCreate', async (message) => {
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
-  log(
-    'messageReactionAdd',
-    listChannel.riceReg,
-    listChannel.log,
-    reaction,
-    user
-  );
+  if (reaction.message.channel.id == listChannel.riceReg)
+    log('messageReactionAdd', listChannel.logRiceReg, reaction, user);
+  if (reaction.message.channel.id == listChannel.late)
+    log('messageReactionAdd', listChannel.logRiceLate, reaction, user);
 });
 
 client.on('messageReactionRemove', async (reaction, user) => {
-  log(
-    'messageReactionRemove',
-    listChannel.riceReg,
-    listChannel.log,
-    reaction,
-    user
-  );
+  if (reaction.message.channel.id == listChannel.riceReg)
+    log('messageReactionAdd', listChannel.logRiceReg, reaction, user);
+  if (reaction.message.channel.id == listChannel.late)
+    log('messageReactionAdd', listChannel.logRiceLate, reaction, user);
 });
 
 client.on('interactionCreate', async (interaction) => {
@@ -104,5 +100,6 @@ client.on('interactionCreate', async (interaction) => {
     await chatgpt.execute(interaction);
   }
 });
+
 // Log in to Discord with your client's token
 client.login(process.env.BOT_TOKEN);
