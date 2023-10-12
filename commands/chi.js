@@ -30,6 +30,10 @@ module.exports = {
         sheetID
       );
       await interaction.reply({
+        content: `Đang ghi lại món cần chi **${name}**`,
+        ephemeral: true,
+      });
+      await interaction.followUp({
         content: `*Đã thêm* **${name}** *với giá* **${price}**`,
         ephemeral: true,
       });

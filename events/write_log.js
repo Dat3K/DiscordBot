@@ -13,20 +13,20 @@ module.exports = async (event, writeChannel, reaction, user) => {
     // Ghi lại thông tin về thời gian và người thả react
     if (event == 'messageReactionAdd') {
       await writeChannel.send(
-        `${member.nickname || `<@${user.id}>`} đã thêm react <:${
-          reaction.emoji.name
-        }:${reaction.emoji.id || ''}> lúc ${vietnamTime} (${
-          reaction.message.embeds[0].title || reaction.message.id
-        })`
+        `*(${reaction.message.embeds[0].title || reaction.message.id})* ${
+          member.nickname || `<@${user.id}>`
+        } đã thêm react <:${reaction.emoji.name}:${
+          reaction.emoji.id || ''
+        }> lúc ${vietnamTime} `
       );
     }
     if (event == 'messageReactionRemove') {
       await writeChannel.send(
-        `${member.nickname || `<@${user.id}>`} đã bỏ react <:${
-          reaction.emoji.name
-        }:${reaction.emoji.id || ''}> lúc ${vietnamTime} (${
-          reaction.message.embeds[0].title || reaction.message.id
-        })`
+        `*(${reaction.message.embeds[0].title || reaction.message.id})* ${
+          member.nickname || `<@${user.id}>`
+        } đã bỏ react <:${reaction.emoji.name}:${
+          reaction.emoji.id || ''
+        }> lúc ${vietnamTime} `
       );
     }
   } catch (error) {
