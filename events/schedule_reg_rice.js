@@ -32,7 +32,7 @@ module.exports = (channel) =>
         )
         .addFields(
           { name: '\u200B', value: '**Thả ⛅ để đăng kí cơm sáng**' },
-          { name: '\u200B', value: '**Thả 🌃 để đăng kí cơm chiều**' },
+          { name: '\u200B', value: '**Thả 🌇 để đăng kí cơm chiều**' },
           { name: '\u200B', value: '\t' }
         )
         .setTimestamp()

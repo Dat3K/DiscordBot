@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 const readyEvent = require('./events/ready');
 const reg_rice = require('./events/reg_rice');
 const reg_morning_late = require('./events/reg_morning_late');
@@ -11,8 +11,13 @@ const chatgpt = require('./commands/chatgpt');
 const schedule_reg_rice = require('./events/schedule_reg_rice');
 const schedule_night_late = require('./events/schedule_night_late');
 const schedule_morning_late = require('./events/schedule_morning_late');
+const read_msg = require('./commands/read_msg');
 let listChannel;
-
+const listHour = {
+  rice: { hour: 3, minute: 0 },
+  morning_late: { hour: 11, minute: 0 },
+  night_late: { hour: 18, minute: 15 },
+};
 // Create a new client instance
 const client = new Client({
   intents: [
@@ -32,6 +37,8 @@ const client = new Client({
 
 client.once(readyEvent.name, () => {
   readyEvent.execute(client);
+  client.user.setActivity('trốn tìm với goshujin-sama', { type: ActivityType.Competing });
+  client.user.setStatus('idle');
   listChannel = {
     test: client.channels.cache.get('1149187511340515399'),
     riceReg: client.channels.cache.get('1152273873086185504'),
@@ -56,20 +63,36 @@ client.on('messageCreate', async (message) => {
     const type = message.embeds[0].data.footer.text;
     console.log(type);
     if (type == 'TreSang') {
-      reg_morning_late(message, listChannel.late);
+      reg_morning_late(
+        message,
+        listChannel.late,
+        listHour.morning_late.hour,
+        listHour.morning_late.minute
+      );
     }
 
     if (type == 'TreToi') {
-      reg_night_late(message, listChannel.late);
+      reg_night_late(
+        message,
+        listChannel.late,
+        listHour.night_late.hour,
+        listHour.night_late.minute
+      );
     }
 
     if (type == 'DangKiCom') {
-      reg_rice(message, listChannel.riceReg);
+      reg_rice(
+        message,
+        listChannel.riceReg,
+        listHour.rice.hour,
+        listHour.rice.minute
+      );
     }
   }
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
+  if (reaction.message.embeds.length === 0) return;
   if (reaction.message.channel.id == listChannel.riceReg)
     log('messageReactionAdd', listChannel.logRiceReg, reaction, user);
   if (reaction.message.channel.id == listChannel.late)
@@ -77,6 +100,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 });
 
 client.on('messageReactionRemove', async (reaction, user) => {
+  if (reaction.message.embeds.length === 0) return;
   if (reaction.message.channel.id == listChannel.riceReg)
     log('messageReactionRemove', listChannel.logRiceReg, reaction, user);
   if (reaction.message.channel.id == listChannel.late)
@@ -98,6 +122,10 @@ client.on('interactionCreate', async (interaction) => {
 
   if (commandName === 'chatgpt') {
     await chatgpt.execute(interaction);
+  }
+
+  if (commandName === 'read_msg') {
+    await read_msg.execute(interaction, listHour);
   }
 });
 

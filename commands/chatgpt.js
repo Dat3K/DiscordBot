@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder} = require('@discordjs/builders');
 require('dotenv').config();
 const { OpenAI } = require('openai');
 module.exports = {

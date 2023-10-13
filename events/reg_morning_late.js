@@ -1,15 +1,33 @@
 const moment = require('moment-timezone');
 const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
 
-module.exports = async (message, channel) => {
+module.exports = async (message, channel, hours, minutes) => {
   const emojiMorning = '<:sang:1159164194256592896>';
   // Tạo một mảng để lưu ID của người dùng đã thả react
   const morningSet = new Set();
 
   try {
+    // Thả reaction vào tin nhắn
     await message.react(emojiMorning);
+
+    // Lấy thời gian hiện tại và thời gian chốt đăng kí
+    const now = moment().tz('Asia/Ho_Chi_Minh');
+    const target = moment()
+      .tz('Asia/Ho_Chi_Minh')
+      .set({ hour: hours, minute: minutes });
+    if (now.hour() >= hours && now.minute() >= minutes) {
+      target.add(1, 'days');
+    }
+    const timeToTarget = target.diff(now);
+    console.log(
+      `Sẽ chốt trễ sáng sau ${moment.duration(timeToTarget).hours()} giờ ${moment
+        .duration(timeToTarget)
+        .minutes()} phút`
+    );
+
+    // Đặt thời gian chốt đăng kí
     const collector = message.createReactionCollector({
-      time: 6 * 60 * 60 * 1000, // Từ 5h sáng đến 11 => 6h
+      time: timeToTarget,
       dispose: true, // Bao gồm cả khi người dùng bỏ react
     });
 

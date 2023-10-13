@@ -1,19 +1,36 @@
 const sheet_reader = require('./sheet_reader');
 const moment = require('moment-timezone');
 moment.locale('vi');
-const { EmbedBuilder } = require('discord.js');
+const { reg_rice_embed } = require('../embeds/reg_embeds');
 
-module.exports = async (message, channel) => {
+module.exports = async (message, channel, hours, minutes) => {
   // Tạo một mảng để lưu ID của người dùng đã thả react
   const morningSet = new Set();
-  const afternoonSet = new Set();
+  const nightSet = new Set();
 
   try {
+    // Thả reaction vào tin nhắn
     await message.react('⛅');
-    await message.react('🌃');
+    await message.react('🌇');
 
+    // Lấy thời gian hiện tại và thời gian chốt đăng kí
+    const now = moment().tz('Asia/Ho_Chi_Minh');
+    const target = moment()
+      .tz('Asia/Ho_Chi_Minh')
+      .set({ hour: hours, minute: minutes });
+    if (now.hour() >= hours && now.minute() >= minutes) {
+      target.add(1, 'days');
+    }
+    const timeToTarget = target.diff(now);
+    console.log(
+      `Sẽ chốt cơm sau ${moment.duration(timeToTarget).hours()} giờ ${moment
+        .duration(timeToTarget)
+        .minutes()} phút`
+    );
+
+    // Đặt thời gian chốt đăng kí
     const collector = message.createReactionCollector({
-      time: 20 * 60 * 60 * 1000, // Thời gian đếm, ở đây là 7h <=> 3h sang
+      time: timeToTarget,
       dispose: true, // Bao gồm cả khi người dùng bỏ react
     });
 
@@ -25,8 +42,8 @@ module.exports = async (message, channel) => {
         morningSet.add(member.nickname || user.tag);
       }
 
-      if (reaction.emoji.name === '🌃') {
-        afternoonSet.add(member.nickname || user.tag);
+      if (reaction.emoji.name === '🌇') {
+        nightSet.add(member.nickname || user.tag);
       }
     });
 
@@ -38,65 +55,28 @@ module.exports = async (message, channel) => {
         morningSet.delete(member.nickname || user.tag);
       }
 
-      if (reaction.emoji.name === '🌃') {
-        afternoonSet.delete(member.nickname || user.tag);
+      if (reaction.emoji.name === '🌇') {
+        nightSet.delete(member.nickname || user.tag);
       }
     });
 
     collector.on('end', async () => {
-      const morningCount = morningSet.size;
-      const afternoonCount = afternoonSet.size;
-      let morningArray = Array.from(morningSet);
-      let afternoonArray = Array.from(afternoonSet);
       const vietnamTime = moment()
         .tz('Asia/Ho_Chi_Minh')
         .format('dddd, DD/MM/YYYY');
+      const embed_message = reg_rice_embed(morningSet, nightSet, vietnamTime);
 
-      const setMessage = new EmbedBuilder()
-        .setAuthor({
-          name: 'Maid Lưu Xá 5',
-          iconURL:
-            'https://i.pinimg.com/564x/3e/2d/de/3e2dde0a4fe1987cf954df0760479579.jpg',
-        })
-        .setColor(0xfe0000)
-        .setTitle(`Chốt đăng kí cơm ${vietnamTime}`.toUpperCase())
-        .setThumbnail(
-          'https://media.giphy.com/media/OZyUhzVIMeBLpjbRGn/giphy.gif'
-        )
-        .addFields(
-          {
-            name: 'Tổng:',
-            value: `Sáng: ${morningCount} \nChiều: ${afternoonCount}`,
-          },
-          {
-            name: 'Sáng',
-            value: `🆗\t${morningArray.join('\n🆗\t')}`,
-            inline: true,
-          },
-          {
-            name: 'Chiều',
-            value: `🆗\t${afternoonArray.join('\n🆗\t')}`,
-            inline: true,
-          }
-        )
-        .setTimestamp()
-        .setFooter({
-          text: 'ChotCom',
-          iconURL:
-            'https://i.pinimg.com/564x/3e/2d/de/3e2dde0a4fe1987cf954df0760479579.jpg',
-        });
+      // Gửi embed message
+      await channel.send({ embeds: [embed_message] });
 
-      await channel.send({
-        content: `➖\n*Danh sách người đăng kí cơm ngày ${vietnamTime}*\n➖`,
-        embeds: [setMessage],
-      });
+      // Ghi vào sheet
       await sheet_reader.appendDataSheet(
         'DangKiCom!A:A',
-        morningArray.map((user) => [user, 'Sáng', vietnamTime])
+        Array.from(morningSet).map((user) => [user, 'Sáng', vietnamTime])
       );
       await sheet_reader.appendDataSheet(
         'DangKiCom!E:E',
-        afternoonArray.map((user) => [user, 'Chiều', vietnamTime])
+        Array.from(nightSet).map((user) => [user, 'Chiều', vietnamTime])
       );
     });
   } catch (error) {
