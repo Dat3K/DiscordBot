@@ -23,16 +23,14 @@ module.exports = (channel) =>
             .tz('Asia/Ho_Chi_Minh')
             .format('dddd, DD/MM/YYYY')}`.toUpperCase()
         )
-        .setDescription(
-          'Thả reaction bên dưới để xin trễ'
-        )
+        .setDescription('Thả reaction bên dưới để xin trễ')
         .setThumbnail(
           'https://media.giphy.com/media/1479Vz8EGUyzmAwe9L/giphy.gif'
         )
-        .addFields(
-          { name: '\u200B', value: '**Thả <:sang:1159164194256592896> để đăng kí trễ sáng**' },
-          { name: '\u200B', value: '\t' }
-        )
+        .addFields({
+          name: '\u200B**Thả <:sang:1159164194256592896> để đăng kí trễ sáng**',
+          value: '\u200B',
+        })
         .setTimestamp()
         .setFooter({
           text: 'TreSang',

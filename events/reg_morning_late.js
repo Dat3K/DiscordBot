@@ -1,5 +1,5 @@
 const moment = require('moment-timezone');
-const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
+const { reg_late_embed } = require('../embeds/reg_embeds');
 
 module.exports = async (message, channel, hours, minutes) => {
   const emojiMorning = '<:sang:1159164194256592896>';
@@ -20,9 +20,9 @@ module.exports = async (message, channel, hours, minutes) => {
     }
     const timeToTarget = target.diff(now);
     console.log(
-      `Sẽ chốt trễ sáng sau ${moment.duration(timeToTarget).hours()} giờ ${moment
+      `Sẽ chốt trễ sáng sau ${moment
         .duration(timeToTarget)
-        .minutes()} phút`
+        .hours()} giờ ${moment.duration(timeToTarget).minutes()} phút`
     );
 
     // Đặt thời gian chốt đăng kí
@@ -50,18 +50,10 @@ module.exports = async (message, channel, hours, minutes) => {
     });
 
     collector.on('end', async () => {
-      const morningCount = morningSet.size;
-      let morningArray = Array.from(morningSet);
-
-      await channel.send(
-        `**Danh sách người đăng kí trễ sáng ngày ${vietnamTime}:**
-      *Số lượng: ${morningCount}*\n➖➖➖➖➖\n🆗\t${morningArray.join(
-          '\n🆗\t'
-        )}`
-      );
-      await channel.send(
-        `*Bếp sau khi viết lên bảng thì hãy chụp và gửi lên đây 📸*`
-      );
+      const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
+      await channel.send({
+        embeds: [reg_late_embed(morningSet, 'Sáng', vietnamTime)],
+      });
     });
   } catch (error) {
     console.error(error);

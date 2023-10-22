@@ -1,5 +1,5 @@
 const moment = require('moment-timezone');
-const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
+const { reg_late_embed } = require('../embeds/reg_embeds');
 
 module.exports = async (message, channel, hours, minutes) => {
   const emojiAfternoon = '<:toi:1159164192218157187>';
@@ -50,18 +50,10 @@ module.exports = async (message, channel, hours, minutes) => {
     });
 
     collector.on('end', async () => {
-      const afternoonCount = afternoonSet.size;
-      let afternoonArray = Array.from(afternoonSet);
-
-      await channel.send(
-        `**Danh sách người đăng kí trễ tối ngày ${vietnamTime}:**
-      *Số lượng: ${afternoonCount}*\n➖➖➖➖➖\n🆗\t${afternoonArray.join(
-          '\n🆗\t'
-        )}`
-      );
-      await channel.send(
-        `*Bếp sau khi viết lên bảng thì hãy chụp và gửi lên đây 📸*`
-      );
+      const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
+      await channel.send({
+        embeds: [reg_late_embed(afternoonSet, 'Chiều', vietnamTime)],
+      });
     });
   } catch (error) {
     console.error(error);

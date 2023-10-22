@@ -31,9 +31,8 @@ module.exports = (channel) =>
           'https://media.giphy.com/media/2voeXtCQUHS1ktx6KN/giphy.gif'
         )
         .addFields(
-          { name: '\u200B', value: '**Thả ⛅ để đăng kí cơm sáng**' },
-          { name: '\u200B', value: '**Thả 🌇 để đăng kí cơm chiều**' },
-          { name: '\u200B', value: '\t' }
+          { name: '\u200B**Thả ⛅ để đăng kí cơm sáng**', value: '\u200B' },
+          { name: '**Thả 🌇 để đăng kí cơm chiều**', value: '\u200B' },
         )
         .setTimestamp()
         .setFooter({

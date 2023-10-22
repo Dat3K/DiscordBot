@@ -37,7 +37,7 @@ const client = new Client({
 
 client.once(readyEvent.name, () => {
   readyEvent.execute(client);
-  client.user.setActivity('trốn tìm với goshujin-sama', { type: ActivityType.Competing });
+  client.user.setActivity('đuổi bắt với Mafia', { type: ActivityType.Competing });
   client.user.setStatus('idle');
   listChannel = {
     test: client.channels.cache.get('1149187511340515399'),

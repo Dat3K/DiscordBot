@@ -23,16 +23,12 @@ module.exports = (channel) =>
             .tz('Asia/Ho_Chi_Minh')
             .format('dddd, DD/MM/YYYY')}`.toUpperCase()
         )
-        .setDescription(
-          'Thả reaction bên dưới để xin trễ'
-        )
-        .setThumbnail(
-          'https://eactious.sirv.com/LX5/gif/night.gif'
-        )
-        .addFields(
-          { name: '\u200B', value: '**Thả <:toi:1159164192218157187> để đăng kí trễ tối**' },
-          { name: '\u200B', value: '\t' }
-        )
+        .setDescription('Thả reaction bên dưới để xin trễ')
+        .setThumbnail('https://eactious.sirv.com/LX5/gif/night.gif')
+        .addFields({
+          name: '\u200B**Thả <:toi:1159164192218157187> để đăng kí trễ tối**',
+          value: '\u200B',
+        })
         .setTimestamp()
         .setFooter({
           text: 'TreToi',
