@@ -92,16 +92,16 @@ const housework_embed = (time, pre_member, cur_member, next_member) => {
     .setThumbnail('https://media.giphy.com/media/ES4Vcv8zWfIt2/giphy.gif')
     .addFields(
       {
-        name: `\u200B*Hôm qua:* **${pre_member}** đã trực phòng`,
-        value: `\u200B`,
+        name: `*Hôm qua:*`,
+        value: `**${pre_member}** đã trực phòng\n`,
       },
       {
-        name: `*Hôm nay:* Đến lượt **${cur_member}** trực phòng`,
-        value: `\u200B`,
+        name: `*Hôm nay:* `,
+        value: `Đến lượt ${cur_member} trực phòng\n`,
       },
       {
-        name: `*Ngày mai:* Đến lượt **${next_member}** trực phòng`,
-        value: `\u200B`,
+        name: `*Ngày mai:* `,
+        value: `Đến lượt **${next_member}** trực phòng\n`,
       }
     )
     .setTimestamp()
