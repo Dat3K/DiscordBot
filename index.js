@@ -12,11 +12,13 @@ const schedule_reg_rice = require('./events/schedule_reg_rice');
 const schedule_night_late = require('./events/schedule_night_late');
 const schedule_morning_late = require('./events/schedule_morning_late');
 const read_msg = require('./commands/read_msg');
+const housework = require('./events/housework');
 let listChannel;
 const listHour = {
   rice: { hour: 3, minute: 0 },
   morning_late: { hour: 11, minute: 0 },
   night_late: { hour: 18, minute: 15 },
+  housework: { hour: 21, minute: 0 },
 };
 // Create a new client instance
 const client = new Client({
@@ -37,7 +39,9 @@ const client = new Client({
 
 client.once(readyEvent.name, () => {
   readyEvent.execute(client);
-  client.user.setActivity('đuổi bắt với Mafia', { type: ActivityType.Competing });
+  client.user.setActivity('đuổi bắt với Mafia', {
+    type: ActivityType.Competing,
+  });
   client.user.setStatus('idle');
   listChannel = {
     test: client.channels.cache.get('1149187511340515399'),
@@ -46,11 +50,18 @@ client.once(readyEvent.name, () => {
     late: client.channels.cache.get('1158435828117286962'),
     logRiceLate: client.channels.cache.get('1160646902291902645'),
     logRiceReg: client.channels.cache.get('1160646807550972065'),
+    pdk: client.channels.cache.get('1149193245490954251'),
   };
+
   listChannel.test.send('Online!!!');
   schedule_reg_rice(listChannel.riceReg);
   schedule_night_late(listChannel.late);
   schedule_morning_late(listChannel.late);
+  housework(
+    listChannel.pdk,
+    listHour.housework.hour,
+    listHour.housework.minute
+  );
 });
 
 client.on('messageCreate', async (message) => {
