@@ -3,6 +3,7 @@ const chiCommand = require('./chi');
 const nhanCommand = require('./nhan');
 const chatgptCommand = require('./chatgpt');
 const read_msg = require('./read_msg');
+const report = require('./report');
 require('dotenv').config();
 
 const commands = [
@@ -10,6 +11,7 @@ const commands = [
   nhanCommand.data.toJSON(),
   chatgptCommand.data.toJSON(),
   read_msg.data.toJSON(),
+  report.data.toJSON(),
 ];
 
 const rest = new REST().setToken(process.env.BOT_TOKEN);

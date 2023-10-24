@@ -157,7 +157,7 @@ module.exports = {
                 : reg_late_embed(usersLate, 'Chiều', vietnamTime),
             ],
           });
-        }, 3000);
+        }, timeToTarget);
         console.log(
           `Sẽ chốt danh sách trễ sau ${timeToTargetMoment.hours()} giờ ${timeToTargetMoment.minutes()} phút`
         );

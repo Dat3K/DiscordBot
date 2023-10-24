@@ -5,14 +5,15 @@ const reg_rice = require('./events/reg_rice');
 const reg_morning_late = require('./events/reg_morning_late');
 const reg_night_late = require('./events/reg_night_late');
 const log = require('./events/write_log');
-const chiCommand = require('./commands/chi');
-const nhanCommand = require('./commands/nhan');
-const chatgpt = require('./commands/chatgpt');
 const schedule_reg_rice = require('./events/schedule_reg_rice');
 const schedule_night_late = require('./events/schedule_night_late');
 const schedule_morning_late = require('./events/schedule_morning_late');
-const read_msg = require('./commands/read_msg');
 const housework = require('./events/housework');
+const chiCommand = require('./commands/chi');
+const nhanCommand = require('./commands/nhan');
+const chatgpt = require('./commands/chatgpt');
+const read_msg = require('./commands/read_msg');
+const report = require('./commands/report');
 let listChannel;
 const listHour = {
   rice: { hour: 3, minute: 0 },
@@ -71,7 +72,9 @@ client.on('messageCreate', async (message) => {
       message.author.id != '1157213890380316754'
     )
       return;
-    const type = message.embeds[0].data.footer.text;
+
+    const type = message.embeds[0].data.footer?.text;
+    if (!type) return;
     console.log(type);
     if (type == 'TreSang') {
       reg_morning_late(
@@ -137,6 +140,10 @@ client.on('interactionCreate', async (interaction) => {
 
   if (commandName === 'read_msg') {
     await read_msg.execute(interaction, listHour);
+  }
+
+  if (commandName === 'report') {
+    await report.execute(interaction);
   }
 });
 
