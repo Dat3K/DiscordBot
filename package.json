@@ -14,6 +14,7 @@
     "dotenv": "^16.3.1",
     "googleapis": "^126.0.1",
     "moment-timezone": "^0.5.43",
+    "mysql": "^2.18.1",
     "node-schedule": "^2.1.1",
     "nodemon": "^3.0.1",
     "openai": "^4.11.0",

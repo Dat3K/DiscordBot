@@ -1,6 +1,5 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
-const readyEvent = require('./events/ready');
 const reg_rice = require('./events/reg_rice');
 const reg_morning_late = require('./events/reg_morning_late');
 const reg_night_late = require('./events/reg_night_late');
@@ -9,12 +8,16 @@ const schedule_reg_rice = require('./events/schedule_reg_rice');
 const schedule_night_late = require('./events/schedule_night_late');
 const schedule_morning_late = require('./events/schedule_morning_late');
 const housework = require('./events/housework');
+const bot_reply = require('./events/bot_reply');
 const chiCommand = require('./commands/chi');
 const nhanCommand = require('./commands/nhan');
 const chatgpt = require('./commands/chatgpt');
 const read_msg = require('./commands/read_msg');
 const report = require('./commands/report');
+const { get_message } = require('./sql/bot_message');
 let listChannel;
+let listMessageRow = [];
+
 const listHour = {
   rice: { hour: 3, minute: 0 },
   morning_late: { hour: 11, minute: 0 },
@@ -38,12 +41,7 @@ const client = new Client({
   ],
 });
 
-client.once(readyEvent.name, () => {
-  readyEvent.execute(client);
-  client.user.setActivity('đuổi bắt với Mafia', {
-    type: ActivityType.Competing,
-  });
-  client.user.setStatus('idle');
+client.once('ready', async () => {
   listChannel = {
     test: client.channels.cache.get('1149187511340515399'),
     riceReg: client.channels.cache.get('1152273873086185504'),
@@ -54,7 +52,15 @@ client.once(readyEvent.name, () => {
     pdk: client.channels.cache.get('1149193245490954251'),
   };
 
+  // Hiển thị thông tin user
+  console.log(`Ready! Logged in as ${client.user.tag}`);
+  client.user.setActivity('hội trưởng rap 💀', {
+    type: ActivityType.Listening,
+  });
+  client.user.setStatus('idle');
   listChannel.test.send('Online!!!');
+
+  // Các hàm chạy định kỳ
   schedule_reg_rice(listChannel.riceReg);
   schedule_night_late(listChannel.late);
   schedule_morning_late(listChannel.late);
@@ -63,6 +69,9 @@ client.once(readyEvent.name, () => {
     listHour.housework.hour,
     listHour.housework.minute
   );
+
+  // Lấy danh sách message của bot
+  listMessageRow = await get_message();
 });
 
 client.on('messageCreate', async (message) => {
@@ -102,6 +111,10 @@ client.on('messageCreate', async (message) => {
         listHour.rice.minute
       );
     }
+  }
+
+  if (message.author.id == '423874227507167233') {
+    bot_reply(message, listMessageRow);
   }
 });
 
