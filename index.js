@@ -60,6 +60,9 @@ client.once('ready', async () => {
   client.user.setStatus('idle');
   listChannel.test.send('Online!!!');
 
+  // Lấy danh sách message của bot
+  listMessageRow = await get_message();
+
   // Các hàm chạy định kỳ
   schedule_reg_rice(listChannel.riceReg);
   schedule_night_late(listChannel.late);
@@ -69,9 +72,6 @@ client.once('ready', async () => {
     listHour.housework.hour,
     listHour.housework.minute
   );
-
-  // Lấy danh sách message của bot
-  listMessageRow = await get_message();
 });
 
 client.on('messageCreate', async (message) => {

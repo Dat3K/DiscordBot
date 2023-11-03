@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const moment = require('moment-timezone');
 moment.locale('vi');
+const sheet_reader = require('../events/sheet_reader');
 const { reg_rice_embed, reg_late_embed } = require('../embeds/reg_embeds');
 
 module.exports = {
