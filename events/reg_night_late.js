@@ -1,7 +1,8 @@
 const moment = require('moment-timezone');
+moment.locale('vi');
 const { reg_late_embed } = require('../embeds/reg_embeds');
 
-module.exports = async (message, channel, hours, minutes) => {
+module.exports = async (message, channel) => {
   const emojiAfternoon = '<:toi:1159164192218157187>';
   // Tạo một mảng để lưu ID của người dùng đã thả react
   const afternoonSet = new Set();
@@ -12,13 +13,14 @@ module.exports = async (message, channel, hours, minutes) => {
 
     // Lấy thời gian hiện tại và thời gian chốt đăng kí
     const now = moment().tz('Asia/Ho_Chi_Minh');
+    const vietnamTime = now.format('dddd, DD/MM/YYYY');
+    const hour = 6;
+    const minutes = 15;
     const target = moment()
       .tz('Asia/Ho_Chi_Minh')
-      .set({ hour: hours, minute: minutes });
-    if (now.hour() >= hours && now.minute() >= minutes) {
-      target.add(1, 'days');
-    }
+      .set({ hour: hour, minute: minutes });
     const timeToTarget = target.diff(now);
+
     console.log(
       `Sẽ chốt trễ tối sau ${moment.duration(timeToTarget).hours()} giờ ${moment
         .duration(timeToTarget)
@@ -50,7 +52,6 @@ module.exports = async (message, channel, hours, minutes) => {
     });
 
     collector.on('end', async () => {
-      const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
       await channel.send({
         embeds: [reg_late_embed(afternoonSet, 'Chiều', vietnamTime)],
       });

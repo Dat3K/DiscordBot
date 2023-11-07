@@ -4,26 +4,15 @@ const reg_rice = require('./events/reg_rice');
 const reg_morning_late = require('./events/reg_morning_late');
 const reg_night_late = require('./events/reg_night_late');
 const log = require('./events/write_log');
-const schedule_reg_rice = require('./events/schedule_reg_rice');
-const schedule_night_late = require('./events/schedule_night_late');
-const schedule_morning_late = require('./events/schedule_morning_late');
+const test = require('./events/test');
 const housework = require('./events/housework');
-const bot_reply = require('./events/bot_reply');
 const chiCommand = require('./commands/chi');
 const nhanCommand = require('./commands/nhan');
-const chatgpt = require('./commands/chatgpt');
 const read_msg = require('./commands/read_msg');
 const report = require('./commands/report');
-const { get_message } = require('./sql/bot_message');
+const api = require('./api/api');
 let listChannel;
-let listMessageRow = [];
 
-const listHour = {
-  rice: { hour: 3, minute: 0 },
-  morning_late: { hour: 11, minute: 0 },
-  night_late: { hour: 18, minute: 15 },
-  housework: { hour: 21, minute: 0 },
-};
 // Create a new client instance
 const client = new Client({
   intents: [
@@ -59,62 +48,35 @@ client.once('ready', async () => {
   });
   client.user.setStatus('idle');
   listChannel.test.send('Online!!!');
-
-  // Lấy danh sách message của bot
-  listMessageRow = await get_message();
-
-  // Các hàm chạy định kỳ
-  schedule_reg_rice(listChannel.riceReg);
-  schedule_night_late(listChannel.late);
-  schedule_morning_late(listChannel.late);
-  housework(
-    listChannel.pdk,
-    listHour.housework.hour,
-    listHour.housework.minute
-  );
 });
 
 client.on('messageCreate', async (message) => {
-  if (message.embeds.length > 0) {
-    if (
-      message.author.id != '678344927997853742' &&
-      message.author.id != '1157213890380316754'
-    )
-      return;
+  if (
+    message.author == '678344927997853742' ||
+    message.author == '423874227507167233'
+  ) {
+    const content = message.content;
+    console.log(content);
 
-    const type = message.embeds[0].data.footer?.text;
-    if (!type) return;
-    console.log(type);
-    if (type == 'TreSang') {
-      reg_morning_late(
-        message,
-        listChannel.late,
-        listHour.morning_late.hour,
-        listHour.morning_late.minute
-      );
+    if (content.includes('TreSang')) {
+      await reg_morning_late(message, listChannel.late);
     }
 
-    if (type == 'TreToi') {
-      reg_night_late(
-        message,
-        listChannel.late,
-        listHour.night_late.hour,
-        listHour.night_late.minute
-      );
+    if (content.includes('TreToi')) {
+      await reg_night_late(message, listChannel.late);
     }
 
-    if (type == 'DangKiCom') {
-      reg_rice(
-        message,
-        listChannel.riceReg,
-        listHour.rice.hour,
-        listHour.rice.minute
-      );
+    if (content.includes('DangKiCom')) {
+      await reg_rice(message, listChannel.riceReg);
     }
-  }
 
-  if (message.author.id == '423874227507167233') {
-    bot_reply(message, listMessageRow);
+    if (content.includes('TrucPhong')) {
+      await housework(listChannel.pdk);
+    }
+
+    if (content.includes('Test')) {
+      await test(message, listChannel.test);
+    }
   }
 });
 
@@ -147,10 +109,6 @@ client.on('interactionCreate', async (interaction) => {
     await nhanCommand.execute(interaction);
   }
 
-  if (commandName === 'chatgpt') {
-    await chatgpt.execute(interaction);
-  }
-
   if (commandName === 'read_msg') {
     await read_msg.execute(interaction, listHour);
   }
@@ -162,3 +120,6 @@ client.on('interactionCreate', async (interaction) => {
 
 // Log in to Discord with your client's token
 client.login(process.env.BOT_TOKEN);
+
+// API
+api();

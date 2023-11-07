@@ -3,29 +3,38 @@ const moment = require('moment-timezone');
 moment.locale('vi');
 const { reg_rice_embed } = require('../embeds/reg_embeds');
 
-module.exports = async (message, channel, hours, minutes) => {
-  // Tạo một mảng để lưu ID của người dùng đã thả react
-  const morningSet = new Set();
-  const nightSet = new Set();
-
+module.exports = async (message, channel) => {
   try {
-    // Thả reaction vào tin nhắn
-    await message.react('⛅');
-    await message.react('🌇');
+    // Tạo một mảng để lưu ID của người dùng đã thả react
+    const morningSet = new Set();
+    const nightSet = new Set();
 
     // Lấy thời gian hiện tại và thời gian chốt đăng kí
-    const now = moment().tz('Asia/Ho_Chi_Minh');
+    const timestamp = message.createdTimestamp;
+    const sentDate = new Date(timestamp);
+    const now = moment(sentDate).tz('Asia/Ho_Chi_Minh');
+    const hour = 3;
+    const minute = 0;
     const target = moment()
       .tz('Asia/Ho_Chi_Minh')
-      .set({ hour: hours, minute: minutes });
-    if (now.hour() >= hours && now.minute() >= minutes) {
-      target.add(1, 'days');
-    }
+      .add(1, 'days')
+      .set({ hour: hour, minute: minute });
+    const targetTime = target.format('dddd, DD/MM/YYYY');
     const timeToTarget = target.diff(now);
+
     console.log(
       `Sẽ chốt cơm sau ${moment.duration(timeToTarget).hours()} giờ ${moment
         .duration(timeToTarget)
         .minutes()} phút`
+    );
+
+    // Thả reaction vào tin nhắn
+    await message.react('⛅');
+    await message.react('🌇');
+
+    // Nhắn thời gian hiện tại
+    await channel.send(
+      `⬆️ *Đăng kí cơm ${now.add(1, 'days').format('dddd, DD/MM/YYYY')}* ⬆️`
     );
 
     // Đặt thời gian chốt đăng kí
@@ -61,10 +70,7 @@ module.exports = async (message, channel, hours, minutes) => {
     });
 
     collector.on('end', async () => {
-      const vietnamTime = moment()
-        .tz('Asia/Ho_Chi_Minh')
-        .format('dddd, DD/MM/YYYY');
-      const embed_message = reg_rice_embed(morningSet, nightSet, vietnamTime);
+      const embed_message = reg_rice_embed(morningSet, nightSet, targetTime);
 
       // Gửi embed message
       await channel.send({ embeds: [embed_message] });
@@ -72,11 +78,11 @@ module.exports = async (message, channel, hours, minutes) => {
       // Ghi vào sheet
       await sheet_reader.appendDataSheet(
         'DangKiCom!A:A',
-        Array.from(morningSet).map((user) => [user, 'Sáng', vietnamTime])
+        Array.from(morningSet).map((user) => [user, 'Sáng', targetTime])
       );
       await sheet_reader.appendDataSheet(
         'DangKiCom!E:E',
-        Array.from(nightSet).map((user) => [user, 'Chiều', vietnamTime])
+        Array.from(nightSet).map((user) => [user, 'Chiều', targetTime])
       );
     });
   } catch (error) {

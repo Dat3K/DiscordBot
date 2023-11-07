@@ -1,7 +1,6 @@
 const { REST, Routes } = require('discord.js');
 const chiCommand = require('./chi');
 const nhanCommand = require('./nhan');
-const chatgptCommand = require('./chatgpt');
 const read_msg = require('./read_msg');
 const report = require('./report');
 require('dotenv').config();
@@ -9,7 +8,6 @@ require('dotenv').config();
 const commands = [
   chiCommand.data.toJSON(), // Chuyển đổi SplashCommandBuilder thành dạng JSON
   nhanCommand.data.toJSON(),
-  chatgptCommand.data.toJSON(),
   read_msg.data.toJSON(),
   report.data.toJSON(),
 ];

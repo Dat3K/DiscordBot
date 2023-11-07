@@ -1,7 +1,8 @@
 const moment = require('moment-timezone');
+moment.locale('vi')
 const { reg_late_embed } = require('../embeds/reg_embeds');
 
-module.exports = async (message, channel, hours, minutes) => {
+module.exports = async (message, channel) => {
   const emojiMorning = '<:sang:1159164194256592896>';
   // Tạo một mảng để lưu ID của người dùng đã thả react
   const morningSet = new Set();
@@ -12,13 +13,14 @@ module.exports = async (message, channel, hours, minutes) => {
 
     // Lấy thời gian hiện tại và thời gian chốt đăng kí
     const now = moment().tz('Asia/Ho_Chi_Minh');
+    const vietnamTime = now.format('dddd, DD/MM/YYYY');
+    const hour = 11;
+    const minute = 0;
     const target = moment()
       .tz('Asia/Ho_Chi_Minh')
-      .set({ hour: hours, minute: minutes });
-    if (now.hour() >= hours && now.minute() >= minutes) {
-      target.add(1, 'days');
-    }
+      .set({ hour: hour, minute: minute });
     const timeToTarget = target.diff(now);
+    
     console.log(
       `Sẽ chốt trễ sáng sau ${moment
         .duration(timeToTarget)
@@ -50,7 +52,6 @@ module.exports = async (message, channel, hours, minutes) => {
     });
 
     collector.on('end', async () => {
-      const vietnamTime = moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY');
       await channel.send({
         embeds: [reg_late_embed(morningSet, 'Sáng', vietnamTime)],
       });
