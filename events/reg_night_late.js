@@ -8,13 +8,10 @@ module.exports = async (message, channel) => {
   const afternoonSet = new Set();
 
   try {
-    // Thả reaction vào tin nhắn
-    await message.react(emojiAfternoon);
-
     // Lấy thời gian hiện tại và thời gian chốt đăng kí
     const now = moment().tz('Asia/Ho_Chi_Minh');
     const vietnamTime = now.format('dddd, DD/MM/YYYY');
-    const hour = 6;
+    const hour = 18;
     const minutes = 15;
     const target = moment()
       .tz('Asia/Ho_Chi_Minh')
@@ -26,6 +23,10 @@ module.exports = async (message, channel) => {
         .duration(timeToTarget)
         .minutes()} phút`
     );
+
+    // Thả reaction vào tin nhắn
+    await message.react(emojiAfternoon);
+    await channel.send(`⬆️ *Xin trễ chiều ${vietnamTime}* ⬆️`);
 
     // Đặt thời gian chốt đăng kí
     const collector = message.createReactionCollector({

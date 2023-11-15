@@ -7,12 +7,15 @@ module.exports = async (channel) => {
     await channel.send(
       `**Hôm nay ngày ${housework.time.format('DD/MM/YYYY')}**\nĐến lượt <@${
         housework.today[0]
-      }> trực phòng nha\nNgày mai đến lượt **${
-        housework.tomorrow[1]
-      }** trực phòng nha`
-      );
-      await channel.send(`Trực xong rồi nhớ chụp lại nha các bạn 😘`);
-      await channel.send(`<:chika:1171364880100626503>`);
+      }> trực phòng nha')`
+    );
+    await channel.send(
+      `\nNgày mai đến lượt <@${housework.tomorrow[0]}> trực phòng nha`
+    );
+    await channel.send(
+      `Trực xong rồi nhớ chụp lại nha các bạn (Chika-chan wit luv 😘)`
+    );
+    await channel.send(`<:chika:1171364880100626503>`);
   } catch (error) {
     console.error(error);
   }

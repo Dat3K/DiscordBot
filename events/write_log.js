@@ -7,13 +7,18 @@ module.exports = async (event, writeChannel, reaction, user) => {
     const vietnamTime = moment()
       .tz('Asia/Ho_Chi_Minh')
       .format('HH:mm:ss  DD/MM/YYYY');
-    if (reaction.message.partial) await reaction.message.fetch(); // Lấy tin nhắn nếu tin nhắn chưa được tải hoàn chỉnh
+
+    // Lấy tin nhắn nếu tin nhắn chưa được tải hoàn chỉnh
+    if (reaction.message.partial) await reaction.message.fetch();
     const guild = reaction.message.guild;
     const member = guild.members.cache.get(user.id);
+    const timestamp = reaction.message.createdTimestamp;
+    const time = moment(new Date(timestamp)).format('HH:mm:ss  DD/MM/YYYY');
+
     // Ghi lại thông tin về thời gian và người thả react
     if (event == 'messageReactionAdd') {
       await writeChannel.send(
-        `*(${reaction.message.embeds[0].title  || reaction.message.id})* **${
+        `*(${reaction.message.embeds[0].title || reaction.message.id})* ${time} **${
           member.nickname || `<@${user.id}>`
         }** đã thêm react <:${reaction.emoji.name}:${
           reaction.emoji.id || ''
@@ -22,7 +27,7 @@ module.exports = async (event, writeChannel, reaction, user) => {
     }
     if (event == 'messageReactionRemove') {
       await writeChannel.send(
-        `*(${reaction.message.embeds[0].title || reaction.message.id})* **${
+        `*(${reaction.message.embeds[0].title || reaction.message.id})* ${time} **${
           member.nickname || `<@${user.id}>`
         }** đã bỏ react <:${reaction.emoji.name}:${
           reaction.emoji.id || ''

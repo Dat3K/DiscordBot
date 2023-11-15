@@ -14,8 +14,22 @@ module.exports = {
         .setDescription('Nhập ID tin nhắn')
         .setRequired(true)
     ),
-  execute: async (interaction, listHour) => {
+  execute: async (interaction) => {
     try {
+      const listHour ={
+        morning_late: {
+          hour: 11,
+          minute: 0,
+        },
+        night_late: {
+          hour: 18,
+          minute: 15,
+        },
+        rice: {
+          hour: 3,
+          minute: 0,
+        },
+      }
       const { options } = interaction;
       const message_id = options.getString('message_id');
       const message = await interaction.channel.messages.fetch(message_id);

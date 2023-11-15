@@ -56,8 +56,6 @@ client.on('messageCreate', async (message) => {
     message.author == '423874227507167233'
   ) {
     const content = message.content;
-    console.log(content);
-
     if (content.includes('TreSang')) {
       await reg_morning_late(message, listChannel.late);
     }
@@ -110,7 +108,7 @@ client.on('interactionCreate', async (interaction) => {
   }
 
   if (commandName === 'read_msg') {
-    await read_msg.execute(interaction, listHour);
+    await read_msg.execute(interaction);
   }
 
   if (commandName === 'report') {

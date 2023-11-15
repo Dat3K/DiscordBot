@@ -1,5 +1,5 @@
 const moment = require('moment-timezone');
-moment.locale('vi')
+moment.locale('vi');
 const { reg_late_embed } = require('../embeds/reg_embeds');
 
 module.exports = async (message, channel) => {
@@ -8,9 +8,6 @@ module.exports = async (message, channel) => {
   const morningSet = new Set();
 
   try {
-    // Thả reaction vào tin nhắn
-    await message.react(emojiMorning);
-
     // Lấy thời gian hiện tại và thời gian chốt đăng kí
     const now = moment().tz('Asia/Ho_Chi_Minh');
     const vietnamTime = now.format('dddd, DD/MM/YYYY');
@@ -20,11 +17,18 @@ module.exports = async (message, channel) => {
       .tz('Asia/Ho_Chi_Minh')
       .set({ hour: hour, minute: minute });
     const timeToTarget = target.diff(now);
-    
+
     console.log(
       `Sẽ chốt trễ sáng sau ${moment
         .duration(timeToTarget)
         .hours()} giờ ${moment.duration(timeToTarget).minutes()} phút`
+    );
+
+    // Thả reaction vào tin nhắn
+    await message.react(emojiMorning);
+
+    await channel.send(
+      `⬆️ *Xin trễ sáng ${vietnamTime}* ⬆️`
     );
 
     // Đặt thời gian chốt đăng kí
