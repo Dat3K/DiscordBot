@@ -6,6 +6,7 @@ const reg_night_late = require('./events/reg_night_late');
 const log = require('./events/write_log');
 const test = require('./events/test');
 const housework = require('./events/housework');
+const get_weather = require('./events/get_weather');
 const chiCommand = require('./commands/chi');
 const nhanCommand = require('./commands/nhan');
 const read_msg = require('./commands/read_msg');
@@ -39,6 +40,8 @@ client.once('ready', async () => {
     logRiceLate: client.channels.cache.get('1160646902291902645'),
     logRiceReg: client.channels.cache.get('1160646807550972065'),
     pdk: client.channels.cache.get('1149193245490954251'),
+    weather: client.channels.cache.get('1174751231856615545'),
+
   };
 
   // Hiển thị thông tin user
@@ -74,6 +77,10 @@ client.on('messageCreate', async (message) => {
 
     if (content.includes('Test')) {
       await test(message, listChannel.test);
+    }
+
+    if(content.includes('ThoiTiet')) {
+      await get_weather(listChannel.weather);
     }
   }
 });

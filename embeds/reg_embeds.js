@@ -2,6 +2,9 @@ const { EmbedBuilder } = require('discord.js');
 const moment = require('moment-timezone');
 moment.locale('vi');
 
+const name = 'Fujiwara Chika';
+const avatar =''
+
 // Chốt đăng kí cơm
 const reg_rice_embed = (morningSet, nightSet, time) => {
   const morningCount = morningSet.size;
