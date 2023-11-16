@@ -12,6 +12,7 @@ const nhanCommand = require('./commands/nhan');
 const read_msg = require('./commands/read_msg');
 const report = require('./commands/report');
 const api = require('./api/api');
+const { set } = require('./api/connection');
 let listChannel;
 
 // Create a new client instance
@@ -124,7 +125,9 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 // Log in to Discord with your client's token
-client.login(process.env.BOT_TOKEN);
+setTimeout( async () => {
+  await client.login(process.env.BOT_TOKEN);
+}, 1000);
 
 // API
 api();

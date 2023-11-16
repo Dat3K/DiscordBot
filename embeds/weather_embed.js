@@ -2,15 +2,15 @@ const { EmbedBuilder } = require('discord.js');
 const moment = require('moment-timezone');
 const Weather = require('../modules/Weather');
 moment.locale('vi');
+const now = moment().tz('Asia/Ho_Chi_Minh').format('dddd DD/MM');
 
-module.exports = async () => {
+const weather_embed = async () => {
   try {
     const weather = new Weather();
     await weather.run();
     const name = 'Fujiwara Chika';
     const avatar =
       'https://i.pinimg.com/originals/a7/a0/0b/a7a00ba09db6aaf0817b83298c0fe6f4.jpg';
-    const now = moment().format('dddd DD/MM');
     const weatherToday = weather.getDayDetail();
     let uvInfo = '';
     if (weatherToday.uv > 0 && weatherToday.uv <= 2) {
@@ -40,27 +40,27 @@ module.exports = async () => {
       .addFields(
         {
           name: dash,
-          value: `➡️ Thời tiết hôm nay: ***${weatherToday.condition.text}***`,
+          value: `➡️ *Thời tiết hôm nay:* **${weatherToday.condition.text}**`,
         },
         {
           name: dash,
-          value: `🌡️ Nhiệt độ trung bình hôm nay: ***${weatherToday.avgtemp_c}°C***`,
+          value: `🌡️ *Nhiệt độ trung bình hôm nay:* **${weatherToday.avgtemp_c}°C**`,
         },
         {
           name: dash,
-          value: `🌡️ Nhiệt độ cao nhất vào khoảng: ***${weatherToday.maxtemp_c}°C***`,
+          value: `🌡️ *Nhiệt độ cao nhất vào khoảng:* **${weatherToday.maxtemp_c}°C**`,
         },
         {
           name: dash,
-          value: `🌡️ Nhiệt độ thấp nhất vào khoảng: ***${weatherToday.mintemp_c}°C***`,
+          value: `🌡️ *Nhiệt độ thấp nhất vào khoảng:* **${weatherToday.mintemp_c}°C**`,
         },
         {
           name: dash,
-          value: `🌧️ Xác xuất có mưa: ***${weatherToday.mintemp_c}%***`,
+          value: `🌧️ *Xác xuất có mưa:* **${weatherToday.mintemp_c}%**`,
         },
         {
           name: dash,
-          value: `🔆 UV: *${uvInfo}\n${dash}*`,
+          value: `🔆 *UV:* *${uvInfo}\n${dash}*`,
         }
       )
       .setFooter({
@@ -74,3 +74,40 @@ module.exports = async () => {
     console.log(error);
   }
 };
+
+const rain_embed = async () => {
+  try {
+    const weather = new Weather();
+    await weather.run();
+    const name = 'Fujiwara Chika';
+    const avatar =
+      'https://i.pinimg.com/originals/a7/a0/0b/a7a00ba09db6aaf0817b83298c0fe6f4.jpg';
+    const listRainHour = weather.getRainTime();
+    const dash = '============================';
+    const embed_message = new EmbedBuilder()
+      .setTitle(`DỰ BÁO NHỮNG THỜI ĐIỂM MƯA TRONG HÔM NAY ${now}`.toUpperCase())
+      .setAuthor({
+        name: name,
+        iconURL: avatar,
+      })
+      .setColor(0xb3b3b3)
+      .setThumbnail(`https://media.giphy.com/media/3oEduTc1ImDHt8hoJy/giphy.gif`)
+      .setFooter({
+        text: name,
+        iconURL: avatar,
+      })
+      .setTimestamp();
+
+    listRainHour.map((hour) => {
+      embed_message.addFields({
+        name: dash,
+        value: `⏰ **${hour.condition.text}** *vào lúc* **${hour.time.split(' ')[1]} giờ.**\n🤔 *Xác xuất mưa:* **${hour.chance_of_rain}%**\n🌡️ *Nhiệt độ vào lúc đó khoảng* **${hour.feelslike_c}°C**\n${dash}`,
+      });
+    });
+    return embed_message;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = {weather_embed, rain_embed};
